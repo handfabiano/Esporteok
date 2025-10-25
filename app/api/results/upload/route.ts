@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
         header: true,
         skipEmptyLines: true,
         complete: (results) => resolve(results),
-        error: (error) => reject(error),
+        error: (error: Error) => reject(error),
       })
     })
 
