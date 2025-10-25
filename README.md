@@ -212,20 +212,44 @@ Esporte/
 - Lista inscrições do usuário
 - Query param: `userId`
 
+## Funcionalidades Implementadas
+
+### Autenticação ✅
+- [x] NextAuth.js v5 configurado
+- [x] Login com email/senha
+- [x] Login social (Google OAuth)
+- [x] Registro de usuários
+- [x] Middleware de proteção de rotas
+- [x] Sistema de roles (PARTICIPANT, ORGANIZER, ADMIN)
+
+### Área do Organizador ✅
+- [x] Dashboard de organizador com estatísticas
+- [x] Formulário completo de criação de eventos
+- [x] Gerenciamento de categorias e preços
+- [x] Listagem de eventos criados
+- [x] Sistema de status (DRAFT, PUBLISHED, etc)
+
+### Área do Participante ✅
+- [x] Página de perfil com estatísticas
+- [x] Visualização de inscrições (futuras e passadas)
+- [x] Histórico de participações
+- [x] Menu de navegação personalizado
+
+### Interface & UX ✅
+- [x] Sistema de notificações (Toast)
+- [x] Componentes UI modernos (shadcn/ui)
+- [x] Header com autenticação e menu de usuário
+- [x] Design responsivo completo
+- [x] Formulários avançados com validação
+
+### Páginas Públicas ✅
+- [x] Homepage com landing page
+- [x] Listagem de eventos com filtros
+- [x] Página de detalhes do evento
+- [x] Calendário mensal de eventos
+- [x] Sistema de categorias por evento
+
 ## Próximos Passos (Roadmap)
-
-### Autenticação
-- [ ] Implementar NextAuth.js
-- [ ] Login com email/senha
-- [ ] Login social (Google, Facebook)
-- [ ] Recuperação de senha
-
-### Área do Organizador
-- [ ] Dashboard de organizador
-- [ ] Criação de eventos
-- [ ] Gestão de inscrições
-- [ ] Relatórios e analytics
-- [ ] Exportação de dados
 
 ### Sistema de Pagamentos
 - [ ] Integração Stripe completa
@@ -235,17 +259,20 @@ Esporte/
 
 ### Funcionalidades Avançadas
 - [ ] Sistema de resultados
-- [ ] Upload de imagens
+- [ ] Upload de imagens (local/cloud)
 - [ ] Certificados digitais
 - [ ] Notificações por email
+- [ ] Recuperação de senha
 - [ ] App mobile (React Native)
 
 ### Melhorias
-- [ ] Testes automatizados
+- [ ] Testes automatizados (Jest, Cypress)
 - [ ] Cache com Redis
 - [ ] CDN para imagens
-- [ ] Busca avançada
-- [ ] Filtros dinâmicos
+- [ ] Busca avançada com Algolia
+- [ ] Filtros dinâmicos avançados
+- [ ] Exportação de dados (CSV, PDF)
+- [ ] Relatórios e analytics detalhados
 
 ## Contribuindo
 
