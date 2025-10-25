@@ -69,6 +69,11 @@ model User {
   // Relacionamentos
   organizedEvents Event[]        @relation("EventOrganizer")
   registrations   Registration[]
+  notifications   Notification[]
+
+  // Stripe
+  stripeCustomerId String?
+
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
@@ -218,6 +223,9 @@ model Registration {
   // Número de peito/bib
   bibNumber       String?
 
+  // Resultado
+  result          Result?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -235,6 +243,7 @@ model Payment {
   // Stripe/Payment Gateway
   paymentIntentId String?       @unique
   paymentMethod   String?
+  stripeCustomerId String?
 
   // Inscrição
   registrationId  String        @unique
@@ -249,4 +258,71 @@ model Payment {
 
   @@index([status])
   @@index([paymentIntentId])
+}
+
+model Result {
+  id              String   @id @default(cuid())
+
+  // Participante
+  registrationId  String   @unique
+  registration    Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+
+  // Resultados
+  position        Int?     // Posição geral
+  categoryPosition Int?    // Posição na categoria
+  time            String?  // Tempo (HH:MM:SS)
+  pace            String?  // Pace (min/km)
+  distance        Float?   // Distância percorrida
+
+  // Status
+  status          String   @default("COMPLETED") // COMPLETED, DNF, DNS, DSQ
+
+  // Metadata adicional
+  splits          Json?    // Tempos parciais
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([registrationId])
+}
+
+enum NotificationType {
+  EMAIL
+  SMS
+  PUSH
+  IN_APP
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  READ
+}
+
+model Notification {
+  id        String             @id @default(cuid())
+
+  // Destinatário
+  userId    String
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Conteúdo
+  type      NotificationType
+  title     String
+  message   String             @db.Text
+
+  // Status
+  status    NotificationStatus @default(PENDING)
+  sentAt    DateTime?
+  readAt    DateTime?
+
+  // Metadata
+  metadata  Json?
+
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@index([userId])
+  @@index([status])
 }

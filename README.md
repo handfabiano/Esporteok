@@ -249,30 +249,63 @@ Esporte/
 - [x] Calendário mensal de eventos
 - [x] Sistema de categorias por evento
 
+### Sistema de Pagamentos ✅
+- [x] Integração Stripe completa
+- [x] Checkout de inscrições com Stripe Elements
+- [x] Payment Intents e processamento seguro
+- [x] Webhooks do Stripe para confirmação
+- [x] Gestão de Stripe Customers
+- [x] Atualização automática de status
+- [x] Incremento de participantes no evento
+
+### Upload de Imagens ✅
+- [x] Integração com UploadThing
+- [x] Componente ImageUpload reutilizável
+- [x] Upload de imagens de capa de eventos
+- [x] Upload de múltiplas imagens
+- [x] Preview e remoção de imagens
+- [x] Upload de avatar de usuário
+- [x] Suporte a CSV para resultados
+
+### Sistema de Resultados ✅
+- [x] Upload de resultados via CSV
+- [x] Parse automático de CSV com PapaParse
+- [x] Associação por número de peito (BIB)
+- [x] Página de resultados públicos
+- [x] Pódio visual (top 3)
+- [x] Tabelas por categoria
+- [x] Ranking geral e por categoria
+- [x] Status de participação (COMPLETED, DNF, DNS, DSQ)
+- [x] Tempos, pace e posições
+
+### Sistema de Notificações ✅
+- [x] Integração com Resend para emails
+- [x] Email de confirmação de inscrição
+- [x] Email ao confirmar pagamento
+- [x] Notificações in-app
+- [x] API de notificações
+- [x] Contador de não lidas
+- [x] Marcar como lida
+- [x] Histórico de notificações
+
 ## Próximos Passos (Roadmap)
 
-### Sistema de Pagamentos
-- [ ] Integração Stripe completa
-- [ ] Checkout de inscrição
-- [ ] Webhooks de pagamento
-- [ ] Reembolsos
-
-### Funcionalidades Avançadas
-- [ ] Sistema de resultados
-- [ ] Upload de imagens (local/cloud)
-- [ ] Certificados digitais
-- [ ] Notificações por email
+### Funcionalidades Adicionais
+- [ ] Certificados digitais em PDF
 - [ ] Recuperação de senha
+- [ ] Edição de perfil completo
+- [ ] Filtros avançados de busca
+- [ ] QR Code para check-in
 - [ ] App mobile (React Native)
 
 ### Melhorias
 - [ ] Testes automatizados (Jest, Cypress)
 - [ ] Cache com Redis
-- [ ] CDN para imagens
-- [ ] Busca avançada com Algolia
-- [ ] Filtros dinâmicos avançados
-- [ ] Exportação de dados (CSV, PDF)
-- [ ] Relatórios e analytics detalhados
+- [ ] Internacionalização (i18n)
+- [ ] Exportação de relatórios (CSV, PDF)
+- [ ] Analytics detalhados para organizadores
+- [ ] Sistema de cupons/descontos
+- [ ] Integração com redes sociais
 
 ## Contribuindo
 
