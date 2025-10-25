@@ -1,1 +1,330 @@
-# Esporte
+# Ticket Sports - Plataforma de Eventos Esportivos
+
+Clone moderno e eficiente do [TicketSports.com.br](https://www.ticketsports.com.br/), desenvolvido com as tecnologias mais recentes (2025).
+
+## Sobre o Projeto
+
+Marketplace completo para eventos esportivos que conecta organizadores e atletas. A plataforma oferece:
+
+### Para Participantes/Atletas
+- Calendário completo de eventos esportivos
+- Inscrição online rápida e segura
+- Gestão de inscrições e pagamentos
+- Consulta de resultados
+- Perfil de atleta com histórico
+
+### Para Organizadores
+- Criação e gestão de eventos
+- Dashboard com analytics
+- Sistema de categorias e preços
+- Gerenciamento de inscrições
+- Controle de pagamentos
+
+### Modalidades Suportadas
+- Corrida
+- Ciclismo
+- Natação
+- Triathlon
+- MTB (Mountain Bike)
+- Trail Running
+- Caminhada
+- E outros
+
+## Stack Tecnológica
+
+### Frontend & Backend
+- **[Next.js 14](https://nextjs.org/)** - Framework React com App Router
+- **[TypeScript](https://www.typescriptlang.org/)** - Tipagem estática
+- **[Tailwind CSS](https://tailwindcss.com/)** - Estilização utility-first
+- **[shadcn/ui](https://ui.shadcn.com/)** - Componentes UI modernos
+
+### Banco de Dados & ORM
+- **[PostgreSQL](https://www.postgresql.org/)** - Banco de dados relacional
+- **[Prisma](https://www.prisma.io/)** - ORM type-safe moderno
+
+### Autenticação
+- **[NextAuth.js v5](https://authjs.dev/)** - Autenticação completa
+
+### Pagamentos
+- **[Stripe](https://stripe.com/)** - Gateway de pagamento
+
+### Deploy
+- **[Vercel](https://vercel.com/)** - Plataforma otimizada para Next.js
+
+## Instalação
+
+### Pré-requisitos
+
+- Node.js 18+ instalado
+- PostgreSQL instalado e rodando
+- npm, yarn ou pnpm
+
+### Passo a Passo
+
+1. **Clone o repositório**
+```bash
+git clone <url-do-repositorio>
+cd Esporte
+```
+
+2. **Instale as dependências**
+```bash
+npm install
+# ou
+yarn install
+# ou
+pnpm install
+```
+
+3. **Configure as variáveis de ambiente**
+```bash
+cp .env.example .env
+```
+
+Edite o arquivo `.env` com suas configurações:
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/ticketsports?schema=public"
+
+# NextAuth
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="seu-secret-aqui-gere-com-openssl-rand-base64-32"
+
+# Stripe (opcional por enquanto)
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+STRIPE_SECRET_KEY="sk_test_..."
+```
+
+4. **Configure o banco de dados**
+```bash
+# Gerar o Prisma Client
+npm run db:generate
+
+# Criar as tabelas no banco
+npm run db:push
+```
+
+5. **Inicie o servidor de desenvolvimento**
+```bash
+npm run dev
+```
+
+Acesse [http://localhost:3000](http://localhost:3000) no navegador.
+
+## Scripts Disponíveis
+
+```bash
+npm run dev          # Inicia servidor de desenvolvimento
+npm run build        # Build para produção
+npm run start        # Inicia servidor de produção
+npm run lint         # Executa linter
+npm run db:generate  # Gera Prisma Client
+npm run db:push      # Atualiza schema do banco
+npm run db:studio    # Abre Prisma Studio (GUI do banco)
+```
+
+## Estrutura do Projeto
+
+```
+Esporte/
+├── app/                      # Next.js 14 App Router
+│   ├── api/                  # API Routes
+│   │   ├── events/          # Endpoints de eventos
+│   │   └── registrations/   # Endpoints de inscrições
+│   ├── eventos/             # Páginas de eventos
+│   │   ├── [slug]/         # Detalhes do evento
+│   │   └── page.tsx        # Lista de eventos
+│   ├── calendario/          # Página de calendário
+│   ├── layout.tsx           # Layout raiz
+│   ├── page.tsx             # Homepage
+│   └── globals.css          # Estilos globais
+├── components/
+│   └── ui/                  # Componentes UI (shadcn)
+├── lib/
+│   ├── prisma.ts            # Cliente Prisma
+│   └── utils.ts             # Utilitários
+├── prisma/
+│   └── schema.prisma        # Schema do banco de dados
+├── package.json
+├── tsconfig.json
+└── tailwind.config.ts
+```
+
+## Modelos de Dados (Prisma)
+
+### User (Usuário)
+- Informações pessoais
+- Autenticação
+- Role (PARTICIPANT, ORGANIZER, ADMIN)
+
+### Event (Evento)
+- Informações do evento
+- Localização e datas
+- Status e tipo
+- Relacionamento com organizador
+
+### Category (Categoria)
+- Categorias de um evento
+- Preços e limites
+- Restrições (idade, gênero)
+
+### Registration (Inscrição)
+- Inscrição do atleta
+- Status e informações adicionais
+- Relacionamento com evento e categoria
+
+### Payment (Pagamento)
+- Controle de pagamentos
+- Integração com Stripe
+- Status e metadata
+
+## API Routes
+
+### Eventos
+
+**GET /api/events**
+- Lista todos os eventos
+- Query params: `type`, `city`, `status`
+
+**POST /api/events**
+- Cria novo evento
+- Requer autenticação (TODO)
+
+**GET /api/events/[id]**
+- Busca evento por ID
+- Inclui organizador, categorias e inscrições
+
+**PUT /api/events/[id]**
+- Atualiza evento
+- Requer autenticação (TODO)
+
+**DELETE /api/events/[id]**
+- Deleta evento
+- Requer autenticação (TODO)
+
+### Inscrições
+
+**POST /api/registrations**
+- Cria nova inscrição
+- Cria pagamento pendente
+
+**GET /api/registrations**
+- Lista inscrições do usuário
+- Query param: `userId`
+
+## Funcionalidades Implementadas
+
+### Autenticação ✅
+- [x] NextAuth.js v5 configurado
+- [x] Login com email/senha
+- [x] Login social (Google OAuth)
+- [x] Registro de usuários
+- [x] Middleware de proteção de rotas
+- [x] Sistema de roles (PARTICIPANT, ORGANIZER, ADMIN)
+
+### Área do Organizador ✅
+- [x] Dashboard de organizador com estatísticas
+- [x] Formulário completo de criação de eventos
+- [x] Gerenciamento de categorias e preços
+- [x] Listagem de eventos criados
+- [x] Sistema de status (DRAFT, PUBLISHED, etc)
+
+### Área do Participante ✅
+- [x] Página de perfil com estatísticas
+- [x] Visualização de inscrições (futuras e passadas)
+- [x] Histórico de participações
+- [x] Menu de navegação personalizado
+
+### Interface & UX ✅
+- [x] Sistema de notificações (Toast)
+- [x] Componentes UI modernos (shadcn/ui)
+- [x] Header com autenticação e menu de usuário
+- [x] Design responsivo completo
+- [x] Formulários avançados com validação
+
+### Páginas Públicas ✅
+- [x] Homepage com landing page
+- [x] Listagem de eventos com filtros
+- [x] Página de detalhes do evento
+- [x] Calendário mensal de eventos
+- [x] Sistema de categorias por evento
+
+### Sistema de Pagamentos ✅
+- [x] Integração Stripe completa
+- [x] Checkout de inscrições com Stripe Elements
+- [x] Payment Intents e processamento seguro
+- [x] Webhooks do Stripe para confirmação
+- [x] Gestão de Stripe Customers
+- [x] Atualização automática de status
+- [x] Incremento de participantes no evento
+
+### Upload de Imagens ✅
+- [x] Integração com UploadThing
+- [x] Componente ImageUpload reutilizável
+- [x] Upload de imagens de capa de eventos
+- [x] Upload de múltiplas imagens
+- [x] Preview e remoção de imagens
+- [x] Upload de avatar de usuário
+- [x] Suporte a CSV para resultados
+
+### Sistema de Resultados ✅
+- [x] Upload de resultados via CSV
+- [x] Parse automático de CSV com PapaParse
+- [x] Associação por número de peito (BIB)
+- [x] Página de resultados públicos
+- [x] Pódio visual (top 3)
+- [x] Tabelas por categoria
+- [x] Ranking geral e por categoria
+- [x] Status de participação (COMPLETED, DNF, DNS, DSQ)
+- [x] Tempos, pace e posições
+
+### Sistema de Notificações ✅
+- [x] Integração com Resend para emails
+- [x] Email de confirmação de inscrição
+- [x] Email ao confirmar pagamento
+- [x] Notificações in-app
+- [x] API de notificações
+- [x] Contador de não lidas
+- [x] Marcar como lida
+- [x] Histórico de notificações
+
+## Próximos Passos (Roadmap)
+
+### Funcionalidades Adicionais
+- [ ] Certificados digitais em PDF
+- [ ] Recuperação de senha
+- [ ] Edição de perfil completo
+- [ ] Filtros avançados de busca
+- [ ] QR Code para check-in
+- [ ] App mobile (React Native)
+
+### Melhorias
+- [ ] Testes automatizados (Jest, Cypress)
+- [ ] Cache com Redis
+- [ ] Internacionalização (i18n)
+- [ ] Exportação de relatórios (CSV, PDF)
+- [ ] Analytics detalhados para organizadores
+- [ ] Sistema de cupons/descontos
+- [ ] Integração com redes sociais
+
+## Contribuindo
+
+Contribuições são bem-vindas! Por favor:
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## Licença
+
+Este projeto é um clone educacional desenvolvido para fins de estudo e demonstração.
+
+## Suporte
+
+Para dúvidas e suporte, abra uma issue no GitHub.
+
+---
+
+Desenvolvido com Next.js 14, TypeScript, Tailwind CSS e Prisma
