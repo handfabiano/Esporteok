@@ -1,0 +1,210 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PARTICIPANT
+  ORGANIZER
+  ADMIN
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum RegistrationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  WAITING_LIST
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REFUNDED
+}
+
+enum EventType {
+  CORRIDA
+  CICLISMO
+  NATACAO
+  TRIATLO
+  MTB
+  TRAIL_RUNNING
+  CAMINHADA
+  OUTROS
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          UserRole  @default(PARTICIPANT)
+  phone         String?
+  cpf           String?   @unique
+  birthDate     DateTime?
+  gender        String?
+
+  // Relacionamentos
+  organizedEvents Event[]        @relation("EventOrganizer")
+  registrations   Registration[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([email])
+  @@index([cpf])
+}
+
+model Event {
+  id          String      @id @default(cuid())
+  title       String
+  slug        String      @unique
+  description String      @db.Text
+  type        EventType
+  status      EventStatus @default(DRAFT)
+
+  // Localização
+  city        String
+  state       String
+  address     String?
+  venue       String?
+
+  // Datas
+  startDate   DateTime
+  endDate     DateTime?
+
+  // Inscrições
+  registrationStartDate DateTime
+  registrationEndDate   DateTime
+  maxParticipants       Int?
+  currentParticipants   Int       @default(0)
+
+  // Imagens
+  coverImage  String?
+  images      String[]
+
+  // Informações adicionais
+  rules       String?   @db.Text
+  termsUrl    String?
+  website     String?
+
+  // Organizador
+  organizerId String
+  organizer   User      @relation("EventOrganizer", fields: [organizerId], references: [id])
+
+  // Relacionamentos
+  categories    Category[]
+  registrations Registration[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([type])
+  @@index([status])
+  @@index([startDate])
+  @@index([city, state])
+}
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+
+  // Limites
+  minAge      Int?
+  maxAge      Int?
+  gender      String? // M, F, UNISEX
+  maxSlots    Int?
+  availableSlots Int @default(0)
+
+  // Evento
+  eventId     String
+  event       Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  // Relacionamentos
+  registrations Registration[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([eventId])
+}
+
+model Registration {
+  id              String             @id @default(cuid())
+  status          RegistrationStatus @default(PENDING)
+
+  // Participante
+  userId          String
+  user            User               @relation(fields: [userId], references: [id])
+
+  // Evento e Categoria
+  eventId         String
+  event           Event              @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  categoryId      String
+  category        Category           @relation(fields: [categoryId], references: [id])
+
+  // Informações adicionais
+  emergencyContact String?
+  emergencyPhone   String?
+  medicalInfo      String?
+  shirtSize        String?
+
+  // Pagamento
+  payment         Payment?
+
+  // Número de peito/bib
+  bibNumber       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, eventId, categoryId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  amount          Float
+  status          PaymentStatus @default(PENDING)
+
+  // Stripe/Payment Gateway
+  paymentIntentId String?       @unique
+  paymentMethod   String?
+
+  // Inscrição
+  registrationId  String        @unique
+  registration    Registration  @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+
+  // Metadata
+  metadata        Json?
+
+  paidAt          DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([status])
+  @@index([paymentIntentId])
+}
