@@ -1,5 +1,6 @@
 import { Calendar, MapPin, Users } from "lucide-react"
 import Link from "next/link"
+import { Header } from "@/components/header"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -81,124 +82,71 @@ const eventTypeLabels: Record<string, string> = {
   OUTROS: "Outros",
 }
 
-export default function EventosPage() {
+export default async function EventosPage() {
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <header className="border-b bg-white sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2">
-              <Calendar className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold">Ticket Sports</h1>
-            </Link>
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/eventos" className="text-sm font-medium text-primary">
-                Eventos
-              </Link>
-              <Link href="/calendario" className="text-sm font-medium hover:text-primary">
-                Calendário
-              </Link>
-              <Link href="/organizador" className="text-sm font-medium hover:text-primary">
-                Sou Organizador
-              </Link>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/login">Entrar</Link>
-              </Button>
-              <Button asChild size="sm">
-                <Link href="/cadastro">Cadastrar</Link>
-              </Button>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
-      {/* Filtros */}
-      <section className="border-b bg-muted/30">
-        <div className="container mx-auto px-4 py-6">
-          <h2 className="text-3xl font-bold mb-4">Eventos Esportivos</h2>
-          <div className="flex flex-wrap gap-2">
-            <Button variant="default" size="sm">Todos</Button>
-            <Button variant="outline" size="sm">Corrida</Button>
-            <Button variant="outline" size="sm">Ciclismo</Button>
-            <Button variant="outline" size="sm">Triathlon</Button>
-            <Button variant="outline" size="sm">Trail Run</Button>
-            <Button variant="outline" size="sm">MTB</Button>
-          </div>
+      {/* Hero Section */}
+      <section className="bg-gradient-to-b from-primary/10 to-background py-12">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold mb-4">Eventos Esportivos</h1>
+          <p className="text-xl text-muted-foreground">
+            Encontre e participe dos melhores eventos de corrida, ciclismo, triatlo e muito mais.
+          </p>
         </div>
       </section>
 
-      {/* Grid de Eventos */}
-      <section className="py-8">
+      {/* Events Grid */}
+      <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {mockEvents.map((event) => (
-              <EventCard key={event.id} event={event} />
+              <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                <div className="aspect-video relative overflow-hidden">
+                  <img
+                    src={event.coverImage}
+                    alt={event.title}
+                    className="object-cover w-full h-full"
+                  />
+                  <Badge className="absolute top-4 right-4">
+                    {eventTypeLabels[event.type]}
+                  </Badge>
+                </div>
+                <CardHeader>
+                  <div className="flex items-start justify-between gap-2">
+                    <CardTitle className="line-clamp-2">{event.title}</CardTitle>
+                  </div>
+                  <CardDescription className="line-clamp-2">
+                    {event.description}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    {format(event.startDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+                  </div>
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <MapPin className="h-4 w-4 mr-2" />
+                    {event.city}, {event.state}
+                  </div>
+                  <div className="flex items-center text-sm text-muted-foreground">
+                    <Users className="h-4 w-4 mr-2" />
+                    {event.currentParticipants.toLocaleString()} / {event.maxParticipants.toLocaleString()} inscritos
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button asChild className="w-full">
+                    <Link href={`/eventos/${event.slug}`}>
+                      Ver Detalhes
+                    </Link>
+                  </Button>
+                </CardFooter>
+              </Card>
             ))}
           </div>
         </div>
       </section>
     </div>
-  )
-}
-
-function EventCard({ event }: { event: typeof mockEvents[0] }) {
-  const occupancyPercentage = event.maxParticipants
-    ? Math.round((event.currentParticipants / event.maxParticipants) * 100)
-    : 0
-
-  return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-      <div className="aspect-video relative overflow-hidden bg-muted">
-        {event.coverImage && (
-          <img
-            src={event.coverImage}
-            alt={event.title}
-            className="object-cover w-full h-full"
-          />
-        )}
-        <div className="absolute top-2 right-2">
-          <Badge>{eventTypeLabels[event.type]}</Badge>
-        </div>
-      </div>
-      <CardHeader>
-        <CardTitle className="line-clamp-2">{event.title}</CardTitle>
-        <CardDescription className="line-clamp-2">{event.description}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Calendar className="h-4 w-4 mr-2" />
-          {format(event.startDate, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-        </div>
-        <div className="flex items-center text-sm text-muted-foreground">
-          <MapPin className="h-4 w-4 mr-2" />
-          {event.city}, {event.state}
-        </div>
-        <div className="flex items-center text-sm text-muted-foreground">
-          <Users className="h-4 w-4 mr-2" />
-          {event.currentParticipants.toLocaleString('pt-BR')} inscritos
-          {event.maxParticipants && ` de ${event.maxParticipants.toLocaleString('pt-BR')}`}
-        </div>
-        {occupancyPercentage > 0 && (
-          <div>
-            <div className="flex justify-between text-xs text-muted-foreground mb-1">
-              <span>Ocupação</span>
-              <span>{occupancyPercentage}%</span>
-            </div>
-            <div className="h-2 bg-muted rounded-full overflow-hidden">
-              <div
-                className="h-full bg-primary"
-                style={{ width: `${Math.min(occupancyPercentage, 100)}%` }}
-              />
-            </div>
-          </div>
-        )}
-      </CardContent>
-      <CardFooter>
-        <Button asChild className="w-full">
-          <Link href={`/eventos/${event.slug}`}>Ver Detalhes</Link>
-        </Button>
-      </CardFooter>
-    </Card>
   )
 }
