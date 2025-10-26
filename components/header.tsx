@@ -1,7 +1,8 @@
 import Link from "next/link"
-import { Trophy } from "lucide-react"
+import { Trophy, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { UserMenu } from "@/components/user-menu"
+import { MobileMenu } from "@/components/mobile-menu"
 import { auth } from "@/auth"
 
 export async function Header() {
@@ -15,6 +16,8 @@ export async function Header() {
             <Trophy className="h-8 w-8 text-primary" />
             <h1 className="text-2xl font-bold">Ticket Sports</h1>
           </Link>
+
+          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             <Link href="/eventos" className="text-sm font-medium hover:text-primary">
               Eventos
@@ -40,6 +43,11 @@ export async function Header() {
               <UserMenu user={session.user} />
             )}
           </nav>
+
+          {/* Mobile Navigation */}
+          <div className="md:hidden">
+            <MobileMenu session={session} />
+          </div>
         </div>
       </div>
     </header>
