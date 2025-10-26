@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Header } from "@/components/header"
+import { HeaderClient } from "@/components/header-client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -140,7 +140,7 @@ export default function NovoEventoPage() {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      <Header />
+      <HeaderClient />
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
