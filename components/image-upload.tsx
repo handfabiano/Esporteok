@@ -1,6 +1,6 @@
 "use client"
 
-import { UploadButton, UploadDropzone } from "@uploadthing/react"
+import { UploadButton, UploadDropzone } from "@/lib/uploadthing-components"
 import type { OurFileRouter } from "@/lib/uploadthing"
 import { useToast } from "@/hooks/use-toast"
 import { Image as ImageIcon, X } from "lucide-react"
