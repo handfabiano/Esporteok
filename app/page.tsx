@@ -1,40 +1,12 @@
 import { Calendar, Trophy, Users, Zap } from "lucide-react"
 import Link from "next/link"
+import { Header } from "@/components/header"
 
 export default function HomePage() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Trophy className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold">Ticket Sports</h1>
-            </div>
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/eventos" className="text-sm font-medium hover:text-primary">
-                Eventos
-              </Link>
-              <Link href="/calendario" className="text-sm font-medium hover:text-primary">
-                Calendário
-              </Link>
-              <Link href="/organizador" className="text-sm font-medium hover:text-primary">
-                Sou Organizador
-              </Link>
-              <Link href="/login" className="text-sm font-medium hover:text-primary">
-                Entrar
-              </Link>
-              <Link
-                href="/cadastro"
-                className="bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90"
-              >
-                Cadastrar
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-primary/10 to-background py-20">
