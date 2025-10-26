@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { SessionProvider } from "next-auth/react"
+import { Providers } from "@/components/providers"
 import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
 
@@ -19,10 +19,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={inter.className}>
-        <SessionProvider>
+        <Providers>
           {children}
           <Toaster />
-        </SessionProvider>
+        </Providers>
       </body>
     </html>
   )
