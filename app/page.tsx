@@ -54,7 +54,7 @@ export default function HomePage() {
               Explorar Eventos
             </Link>
             <Link
-              href="/organizador/cadastro"
+              href="/organizador/eventos/novo"
               className="border-2 border-primary text-primary px-8 py-3 rounded-md font-medium hover:bg-primary/10 text-lg"
             >
               Criar Evento
