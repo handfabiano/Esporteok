@@ -1,5 +1,6 @@
 import { Calendar as CalendarIcon, MapPin, Filter } from "lucide-react"
 import Link from "next/link"
+import { Header } from "@/components/header"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -77,7 +78,7 @@ const eventTypeColors: Record<string, string> = {
   OUTROS: "bg-gray-500",
 }
 
-export default function CalendarioPage() {
+export default async function CalendarioPage() {
   const currentDate = new Date()
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(currentDate)
@@ -96,33 +97,7 @@ export default function CalendarioPage() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="border-b bg-white sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center space-x-2">
-              <CalendarIcon className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold">Ticket Sports</h1>
-            </Link>
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/eventos" className="text-sm font-medium hover:text-primary">
-                Eventos
-              </Link>
-              <Link href="/calendario" className="text-sm font-medium text-primary">
-                Calendário
-              </Link>
-              <Link href="/organizador" className="text-sm font-medium hover:text-primary">
-                Sou Organizador
-              </Link>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/login">Entrar</Link>
-              </Button>
-              <Button asChild size="sm">
-                <Link href="/cadastro">Cadastrar</Link>
-              </Button>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       <div className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
