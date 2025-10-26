@@ -38,9 +38,9 @@ export function HeaderClient() {
                   <Link href="/cadastro">Cadastrar</Link>
                 </Button>
               </>
-            ) : (
+            ) : session.user ? (
               <UserMenu user={session.user} />
-            )}
+            ) : null}
           </nav>
         </div>
       </div>
