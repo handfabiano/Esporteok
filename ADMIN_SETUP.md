@@ -29,6 +29,31 @@
 
 ### 1️⃣ Criar Usuário Admin Inicial
 
+#### Opção A: Via API (Recomendado para produção)
+
+1. Acesse a rota de setup: `https://seu-app.vercel.app/api/setup/admin`
+
+2. Faça uma requisição POST:
+```bash
+curl -X POST https://seu-app.vercel.app/api/setup/admin \
+  -H "Content-Type: application/json" \
+  -d '{"setupKey": "sua-chave-secreta"}'
+```
+
+Ou simplesmente acesse no navegador:
+```
+https://seu-app.vercel.app/api/setup/admin
+```
+
+E faça um POST com o body: `{"setupKey": "sua-chave-secreta"}`
+
+3. Para verificar se já existe admin:
+```bash
+curl https://seu-app.vercel.app/api/setup/admin
+```
+
+#### Opção B: Via Script de Seed (Desenvolvimento local)
+
 Execute o script de seed para criar o primeiro admin:
 
 ```bash
@@ -134,6 +159,26 @@ npm run db:seed
 - ❌ Admin não pode excluir a própria conta
 - ❌ Email não pode ser alterado
 - ❌ Não pode excluir usuário com dados relacionados
+
+### Variáveis de Ambiente Necessárias
+Para o sistema de autenticação funcionar corretamente, configure no `.env`:
+
+```bash
+# Database
+DATABASE_URL="sua-connection-string-do-postgres"
+
+# NextAuth (obrigatório)
+AUTH_SECRET="gere-com-openssl-rand-base64-32"
+NEXTAUTH_URL="https://seu-dominio.com"
+
+# Setup Admin (opcional - para proteger a rota de setup)
+ADMIN_SETUP_KEY="sua-chave-secreta-aqui"
+```
+
+Para gerar AUTH_SECRET:
+```bash
+openssl rand -base64 32
+```
 
 ---
 
