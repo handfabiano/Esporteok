@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
                 <li><strong>Categoria:</strong> ${payment.registration.category.name}</li>
                 <li><strong>Data:</strong> ${new Date(payment.registration.event.startDate).toLocaleDateString("pt-BR")}</li>
                 <li><strong>Local:</strong> ${payment.registration.event.city}, ${payment.registration.event.state}</li>
-                <li><strong>Valor pago:</strong> R$ ${payment.amount.toFixed(2)}</li>
+                <li><strong>Valor pago:</strong> R$ ${Number(payment.amount).toFixed(2)}</li>
               </ul>
 
               <p>Aguarde mais informações sobre o evento em breve.</p>

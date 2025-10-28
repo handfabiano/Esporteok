@@ -189,7 +189,7 @@ export default function EventoDetalhe({ params }: { params: { slug: string } }) 
                       </div>
                       <div className="text-right">
                         <div className="text-2xl font-bold text-primary">
-                          R$ {category.price.toFixed(2)}
+                          R$ {Number(category.price).toFixed(2)}
                         </div>
                       </div>
                     </div>
