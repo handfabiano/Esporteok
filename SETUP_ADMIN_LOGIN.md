@@ -7,10 +7,11 @@ Este guia irá te ajudar a configurar corretamente o sistema de autenticação a
 Se você está tendo problemas para fazer login como admin, provavelmente é porque:
 
 1. ❌ As variáveis de ambiente não estão configuradas corretamente
-2. ❌ O usuário admin não foi criado no banco de dados
-3. ❌ A chave AUTH_SECRET não está definida
+2. ❌ O banco de dados não foi inicializado (tabelas não criadas)
+3. ❌ O usuário admin não foi criado no banco de dados
+4. ❌ A chave AUTH_SECRET não está definida
 
-## ✅ Solução em 3 Passos
+## ✅ Solução em 4 Passos
 
 ### Passo 1: Configurar Variáveis de Ambiente
 
@@ -41,22 +42,43 @@ AUTH_SECRET="wxH/i1o4Szy/RJXlYINHYN/GULfbzIw0Pcbne60FSd0="
 NEXTAUTH_URL="http://localhost:3000"
 ```
 
-### Passo 2: Criar Usuário Admin
+### Passo 2: Inicializar o Banco de Dados
 
-#### Opção A: Via API (Funciona em Produção)
+Primeiro, você precisa criar as tabelas no banco de dados.
 
-Depois de fazer o deploy, acesse no navegador ou use curl:
+#### Via API (Recomendado para Produção):
 
 ```bash
-# Verificar se já existe admin
-curl https://seu-app.vercel.app/api/setup/admin
+# Criar as tabelas no banco
+curl -X POST https://seu-app.vercel.app/api/setup/database \
+  -H "Content-Type: application/json"
+```
 
+Ou simplesmente abra no navegador e acesse:
+```
+https://seu-app.vercel.app/api/setup/database
+```
+
+Aguarde alguns segundos. Você deve ver:
+```json
+{
+  "success": true,
+  "message": "Banco de dados inicializado com sucesso",
+  "nextStep": "Agora acesse /api/setup/admin para criar o usuário admin"
+}
+```
+
+### Passo 3: Criar Usuário Admin
+
+Depois de inicializar o banco, crie o admin:
+
+```bash
 # Criar admin
 curl -X POST https://seu-app.vercel.app/api/setup/admin \
   -H "Content-Type: application/json"
 ```
 
-Ou simplesmente abra no navegador:
+Ou acesse no navegador:
 ```
 https://seu-app.vercel.app/api/setup/admin
 ```
@@ -95,10 +117,18 @@ npm run db:seed
 
 ## 🔍 Troubleshooting
 
+### Erro: "The table public.User does not exist"
+
+**Solução:**
+- ✔️ Execute o Passo 2 → POST /api/setup/database
+- ✔️ Aguarde a criação das tabelas completar
+- ✔️ Depois execute o Passo 3 → POST /api/setup/admin
+
 ### Erro: "Email ou senha incorretos"
 
 **Causas possíveis:**
-- ✔️ O usuário admin não foi criado → Execute o Passo 2
+- ✔️ O banco não foi inicializado → Execute o Passo 2
+- ✔️ O usuário admin não foi criado → Execute o Passo 3
 - ✔️ AUTH_SECRET está incorreto/faltando → Verifique o Passo 1
 - ✔️ Você não fez redeploy após adicionar env vars → Faça redeploy no Vercel
 
@@ -137,7 +167,8 @@ Antes de reportar um problema, verifique:
 - [ ] `NEXTAUTH_URL` está definido corretamente
 - [ ] `DATABASE_URL` está correto e acessível
 - [ ] Você fez **Redeploy** no Vercel após adicionar as variáveis
-- [ ] O usuário admin foi criado (verifique via API)
+- [ ] As tabelas foram criadas (POST /api/setup/database)
+- [ ] O usuário admin foi criado (POST /api/setup/admin)
 - [ ] Você está usando o email e senha corretos
 - [ ] O browser não está bloqueando cookies
 
