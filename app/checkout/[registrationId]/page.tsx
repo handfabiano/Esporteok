@@ -132,7 +132,7 @@ export default function CheckoutPage({ params }: { params: { registrationId: str
                 >
                   <CheckoutForm
                     registrationId={params.registrationId}
-                    amount={registrationData?.category.price || 0}
+                    amount={Number(registrationData?.category.price) || 0}
                     onSuccess={() => {
                       router.push("/minha-conta/inscricoes?success=true")
                     }}
