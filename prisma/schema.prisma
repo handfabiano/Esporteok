@@ -174,7 +174,7 @@ model Category {
   id          String  @id @default(cuid())
   name        String
   description String?
-  price       Float
+  price       Decimal @db.Decimal(10, 2)
 
   // Limites
   minAge      Int?
@@ -237,7 +237,7 @@ model Registration {
 
 model Payment {
   id              String        @id @default(cuid())
-  amount          Float
+  amount          Decimal       @db.Decimal(10, 2)
   status          PaymentStatus @default(PENDING)
 
   // Stripe/Payment Gateway
@@ -272,7 +272,7 @@ model Result {
   categoryPosition Int?    // Posição na categoria
   time            String?  // Tempo (HH:MM:SS)
   pace            String?  // Pace (min/km)
-  distance        Float?   // Distância percorrida
+  distance        Decimal? @db.Decimal(10, 2) // Distância percorrida
 
   // Status
   status          String   @default("COMPLETED") // COMPLETED, DNF, DNS, DSQ

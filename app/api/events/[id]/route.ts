@@ -1,5 +1,28 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { auth } from "@/auth"
+import { z } from "zod"
+
+const updateEventSchema = z.object({
+  title: z.string().min(3).optional(),
+  description: z.string().min(10).optional(),
+  type: z.enum(["CORRIDA", "CICLISMO", "NATACAO", "TRIATLO", "MTB", "TRAIL_RUNNING", "CAMINHADA", "OUTROS"]).optional(),
+  status: z.enum(["DRAFT", "PUBLISHED", "ONGOING", "COMPLETED", "CANCELLED"]).optional(),
+  city: z.string().min(2).optional(),
+  state: z.string().length(2).optional(),
+  address: z.string().optional(),
+  venue: z.string().optional(),
+  startDate: z.string().datetime().optional(),
+  endDate: z.string().datetime().optional(),
+  registrationStartDate: z.string().datetime().optional(),
+  registrationEndDate: z.string().datetime().optional(),
+  maxParticipants: z.number().int().positive().optional(),
+  coverImage: z.string().url().optional(),
+  images: z.array(z.string().url()).optional(),
+  rules: z.string().optional(),
+  termsUrl: z.string().url().optional(),
+  website: z.string().url().optional(),
+})
 
 // GET /api/events/[id] - Buscar evento por ID
 export async function GET(
@@ -75,37 +98,64 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const body = await request.json()
+    const session = await auth()
 
-    // TODO: Adicionar autenticação e verificar se o usuário é o organizador
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: "Autenticação necessária" },
+        { status: 401 }
+      )
+    }
+
+    // Buscar evento para validar ownership
+    const existingEvent = await prisma.event.findUnique({
+      where: { id: params.id },
+      select: { id: true, organizerId: true },
+    })
+
+    if (!existingEvent) {
+      return NextResponse.json(
+        { success: false, error: "Evento não encontrado" },
+        { status: 404 }
+      )
+    }
+
+    // Verificar se o usuário é o organizador ou admin
+    if (existingEvent.organizerId !== session.user.id && session.user.role !== "ADMIN") {
+      return NextResponse.json(
+        { success: false, error: "Você não tem permissão para editar este evento" },
+        { status: 403 }
+      )
+    }
+
+    const body = await request.json()
+    const validatedData = updateEventSchema.parse(body)
 
     const event = await prisma.event.update({
-      where: {
-        id: params.id,
-      },
+      where: { id: params.id },
       data: {
-        title: body.title,
-        description: body.description,
-        type: body.type,
-        status: body.status,
-        city: body.city,
-        state: body.state,
-        address: body.address,
-        venue: body.venue,
-        startDate: body.startDate ? new Date(body.startDate) : undefined,
-        endDate: body.endDate ? new Date(body.endDate) : undefined,
-        registrationStartDate: body.registrationStartDate
-          ? new Date(body.registrationStartDate)
+        title: validatedData.title,
+        description: validatedData.description,
+        type: validatedData.type,
+        status: validatedData.status,
+        city: validatedData.city,
+        state: validatedData.state,
+        address: validatedData.address,
+        venue: validatedData.venue,
+        startDate: validatedData.startDate ? new Date(validatedData.startDate) : undefined,
+        endDate: validatedData.endDate ? new Date(validatedData.endDate) : undefined,
+        registrationStartDate: validatedData.registrationStartDate
+          ? new Date(validatedData.registrationStartDate)
           : undefined,
-        registrationEndDate: body.registrationEndDate
-          ? new Date(body.registrationEndDate)
+        registrationEndDate: validatedData.registrationEndDate
+          ? new Date(validatedData.registrationEndDate)
           : undefined,
-        maxParticipants: body.maxParticipants,
-        coverImage: body.coverImage,
-        images: body.images,
-        rules: body.rules,
-        termsUrl: body.termsUrl,
-        website: body.website,
+        maxParticipants: validatedData.maxParticipants,
+        coverImage: validatedData.coverImage,
+        images: validatedData.images,
+        rules: validatedData.rules,
+        termsUrl: validatedData.termsUrl,
+        website: validatedData.website,
       },
     })
 
@@ -114,12 +164,16 @@ export async function PUT(
       data: event,
     })
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { success: false, error: "Dados inválidos", details: error.errors },
+        { status: 400 }
+      )
+    }
+
     console.error("Error updating event:", error)
     return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to update event",
-      },
+      { success: false, error: "Falha ao atualizar evento" },
       { status: 500 }
     )
   }
@@ -131,25 +185,48 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    // TODO: Adicionar autenticação e verificar se o usuário é o organizador
+    const session = await auth()
+
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: "Autenticação necessária" },
+        { status: 401 }
+      )
+    }
+
+    // Buscar evento para validar ownership
+    const existingEvent = await prisma.event.findUnique({
+      where: { id: params.id },
+      select: { id: true, organizerId: true, title: true },
+    })
+
+    if (!existingEvent) {
+      return NextResponse.json(
+        { success: false, error: "Evento não encontrado" },
+        { status: 404 }
+      )
+    }
+
+    // Verificar se o usuário é o organizador ou admin
+    if (existingEvent.organizerId !== session.user.id && session.user.role !== "ADMIN") {
+      return NextResponse.json(
+        { success: false, error: "Você não tem permissão para excluir este evento" },
+        { status: 403 }
+      )
+    }
 
     await prisma.event.delete({
-      where: {
-        id: params.id,
-      },
+      where: { id: params.id },
     })
 
     return NextResponse.json({
       success: true,
-      message: "Event deleted successfully",
+      message: "Evento excluído com sucesso",
     })
   } catch (error) {
     console.error("Error deleting event:", error)
     return NextResponse.json(
-      {
-        success: false,
-        error: "Failed to delete event",
-      },
+      { success: false, error: "Falha ao excluir evento" },
       { status: 500 }
     )
   }

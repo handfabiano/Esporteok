@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
+import { cpfSchema } from "@/lib/validators"
 
 const updateProfileSchema = z.object({
   name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres").optional(),
-  phone: z.string().optional(),
-  cpf: z.string().optional(),
+  phone: z.string().min(10, "Telefone inválido").optional(),
+  cpf: cpfSchema.optional(),
 })
 
 export async function PUT(request: NextRequest) {

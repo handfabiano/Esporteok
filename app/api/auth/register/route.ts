@@ -6,7 +6,12 @@ import { z } from "zod"
 const registerSchema = z.object({
   name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
   email: z.string().email("Email inválido"),
-  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+  password: z
+    .string()
+    .min(8, "Senha deve ter pelo menos 8 caracteres")
+    .regex(/[A-Z]/, "Senha deve conter pelo menos uma letra maiúscula")
+    .regex(/[a-z]/, "Senha deve conter pelo menos uma letra minúscula")
+    .regex(/[0-9]/, "Senha deve conter pelo menos um número"),
   role: z.enum(["PARTICIPANT", "ORGANIZER"]).default("PARTICIPANT"),
 })
 
@@ -25,7 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: "Email já cadastrado",
+          error: "Não foi possível completar o cadastro. Verifique os dados e tente novamente.",
         },
         { status: 400 }
       )
