@@ -26,6 +26,9 @@ yarn-error.log*
 .env*.local
 .env
 
+# sensitive files with generated keys
+CHAVES_GERADAS.txt
+
 # vercel
 .vercel
 
