@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
+import { textToSafeHtml } from "@/lib/sanitize"
 
 // Mock de dados - depois virá do banco
 const mockEventData: Record<string, any> = {
@@ -224,7 +225,7 @@ export default function EventoDetalhe({ params }: { params: { slug: string } }) 
                 </CardHeader>
                 <CardContent>
                   <div className="prose prose-sm max-w-none">
-                    <div dangerouslySetInnerHTML={{ __html: event.rules.replace(/\n/g, '<br />') }} />
+                    <div dangerouslySetInnerHTML={{ __html: textToSafeHtml(event.rules) }} />
                   </div>
                 </CardContent>
               </Card>

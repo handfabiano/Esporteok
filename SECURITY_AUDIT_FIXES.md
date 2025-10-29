@@ -52,8 +52,10 @@ Este documento descreve as correções de segurança implementadas após auditor
 ### ALTAS (6 corrigidas)
 
 #### 8. ✅ XSS via dangerouslySetInnerHTML
-- **Status**: PARCIAL - Código identificado em `app/eventos/[slug]/page.tsx:227`
-- **Recomendação**: Usar biblioteca de sanitização DOMPurify ou markdown parser
+- **Arquivo**: `app/eventos/[slug]/page.tsx:227`
+- **Correção**: Implementada sanitização HTML com biblioteca isomorphic-dompurify
+- **Arquivo criado**: `lib/sanitize.ts` com funções `sanitizeHtml()` e `textToSafeHtml()`
+- **Validação**: HTML perigoso é escapado, permitindo apenas tags seguras (br, p, etc)
 
 #### 9. ✅ Float para Valores Monetários
 - **Arquivo**: `prisma/schema.prisma`
