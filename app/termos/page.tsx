@@ -166,7 +166,7 @@ export default function TermosPage() {
 
             <h3 className="text-xl font-semibold mb-3 mt-4">8.2 Plataforma</h3>
             <p className="mb-4">
-              Fornecemos a plataforma "no estado em que se encontra". Não garantimos:
+              Fornecemos a plataforma &quot;no estado em que se encontra&quot;. Não garantimos:
             </p>
             <ul className="list-disc pl-6 mb-4 space-y-2">
               <li>Disponibilidade ininterrupta ou livre de erros</li>
@@ -241,7 +241,7 @@ export default function TermosPage() {
           <div className="bg-amber-50 border border-amber-200 p-6 rounded-lg mt-8">
             <h3 className="text-lg font-semibold mb-2">⚠️ Importante</h3>
             <p className="text-sm">
-              Ao clicar em "Aceito os Termos de Uso" durante o cadastro, você declara ter lido,
+              Ao clicar em &quot;Aceito os Termos de Uso&quot; durante o cadastro, você declara ter lido,
               compreendido e concordado com todos os termos e condições aqui estabelecidos.
             </p>
           </div>
