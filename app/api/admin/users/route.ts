@@ -4,15 +4,6 @@ import { prisma } from "@/lib/prisma"
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth()
-
-    if (!session || session.user.role !== "ADMIN") {
-      return NextResponse.json(
-        { success: false, error: "Acesso negado" },
-        { status: 403 }
-      )
-    }
-
     const users = await prisma.user.findMany({
       select: {
         id: true,

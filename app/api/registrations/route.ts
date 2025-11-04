@@ -12,16 +12,22 @@ const createRegistrationSchema = z.object({
   shirtSize: z.enum(["PP", "P", "M", "G", "GG", "XG"]).optional(),
 })
 
-// POST /api/registrations - Criar nova inscrição
+// POST /api/registrations - Criar nova inscrição (sem autenticação para testes)
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
+    // Busca ou cria um usuário padrão para testes
+    let defaultUser = await prisma.user.findFirst({
+      where: { email: "teste@esporteok.com" }
+    })
 
-    if (!session) {
-      return NextResponse.json(
-        { success: false, error: "Autenticação necessária" },
-        { status: 401 }
-      )
+    if (!defaultUser) {
+      defaultUser = await prisma.user.create({
+        data: {
+          email: "teste@esporteok.com",
+          name: "Usuário Teste",
+          role: "PARTICIPANT",
+        }
+      })
     }
 
     const body = await request.json()
@@ -75,7 +81,7 @@ export async function POST(request: NextRequest) {
     // Verificar se o usuário já está inscrito neste evento
     const existingRegistration = await prisma.registration.findFirst({
       where: {
-        userId: session.user.id,
+        userId: defaultUser.id,
         eventId: validatedData.eventId,
       },
     })
@@ -89,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     const registration = await prisma.registration.create({
       data: {
-        userId: session.user.id, // Usa o ID do usuário autenticado
+        userId: defaultUser.id,
         eventId: validatedData.eventId,
         categoryId: validatedData.categoryId,
         status: "PENDING",
@@ -156,22 +162,10 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET /api/registrations - Listar inscrições do usuário autenticado
+// GET /api/registrations - Listar todas as inscrições (sem autenticação para testes)
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth()
-
-    if (!session) {
-      return NextResponse.json(
-        { success: false, error: "Autenticação necessária" },
-        { status: 401 }
-      )
-    }
-
     const registrations = await prisma.registration.findMany({
-      where: {
-        userId: session.user.id, // Usa o ID do usuário autenticado
-      },
       include: {
         event: true,
         category: true,
