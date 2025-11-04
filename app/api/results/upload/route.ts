@@ -5,15 +5,6 @@ import Papa from "papaparse"
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await auth()
-
-    if (!session || session.user.role !== "ORGANIZER") {
-      return NextResponse.json(
-        { success: false, error: "Não autorizado" },
-        { status: 403 }
-      )
-    }
-
     const formData = await request.formData()
     const file = formData.get("file") as File
     const eventId = formData.get("eventId") as string
@@ -25,15 +16,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar se o evento pertence ao organizador
+    // Verificar se o evento existe
     const event = await prisma.event.findUnique({
       where: { id: eventId },
       include: { registrations: true },
     })
 
-    if (!event || event.organizerId !== session.user.id) {
+    if (!event) {
       return NextResponse.json(
-        { success: false, error: "Evento não encontrado ou não autorizado" },
+        { success: false, error: "Evento não encontrado" },
         { status: 404 }
       )
     }

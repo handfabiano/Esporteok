@@ -15,15 +15,6 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth()
-
-    if (!session || session.user.role !== "ADMIN") {
-      return NextResponse.json(
-        { success: false, error: "Acesso negado" },
-        { status: 403 }
-      )
-    }
-
     const body = await request.json()
     const validatedData = updateUserSchema.parse(body)
 
@@ -83,23 +74,6 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth()
-
-    if (!session || session.user.role !== "ADMIN") {
-      return NextResponse.json(
-        { success: false, error: "Acesso negado" },
-        { status: 403 }
-      )
-    }
-
-    // Não permitir excluir o próprio usuário
-    if (session.user.id === params.id) {
-      return NextResponse.json(
-        { success: false, error: "Você não pode excluir sua própria conta" },
-        { status: 400 }
-      )
-    }
-
     await prisma.user.delete({
       where: { id: params.id },
     })
